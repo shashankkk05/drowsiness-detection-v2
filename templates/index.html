@@ -513,10 +513,13 @@
 
     <script>
         let statsInterval;
-        const API_URL = '';
+        // FIXED FOR RENDER: Use empty string so it uses the same domain
+        const API_URL = window.location.origin;
         let alarmAudio = null;
         let isAlarmPlaying = false;
         let sosEmail = '';
+
+        console.log('🌐 API URL:', API_URL);
 
         window.addEventListener('load', () => {
             initAlarm();
@@ -529,7 +532,7 @@
                 }
             })
             .catch(error => {
-                console.warn('⚠️ Server might not be running.');
+                console.warn('⚠️ Server might not be running.', error);
             });
         });
 
@@ -587,7 +590,7 @@
         }
 
         function initAlarm() {
-            alarmAudio = new Audio('/static/alarm.mp3');
+            alarmAudio = new Audio(`${API_URL}/static/alarm.mp3`);
             
             alarmAudio.addEventListener('error', function() {
                 console.warn('⚠️ Local alarm failed, using backup');
@@ -611,6 +614,8 @@
                 return;
             }
 
+            console.log('🎬 Starting detection...');
+            
             fetch(`${API_URL}/start`, {
                 method: 'POST',
                 headers: {
@@ -618,10 +623,12 @@
                 }
             })
             .then(response => {
+                console.log('📡 Start response status:', response.status);
                 if (!response.ok) throw new Error('Failed to start');
                 return response.json();
             })
             .then(data => {
+                console.log('✅ Detection started:', data);
                 document.getElementById('videoFeed').src = `${API_URL}/video_feed?t=${new Date().getTime()}`;
                 document.getElementById('videoFeed').style.display = 'block';
                 document.getElementById('placeholder').style.display = 'none';
@@ -634,11 +641,14 @@
                 statsInterval = setInterval(updateStats, 1000);
             })
             .catch(error => {
-                alert('❌ Failed to start detection! Make sure server is running.');
+                console.error('❌ Start detection error:', error);
+                alert('❌ Failed to start detection!\n\nError: ' + error.message + '\n\nMake sure:\n1. Camera permissions are granted\n2. Server is running properly\n3. Check browser console (F12) for details');
             });
         }
 
         function stopDetection() {
+            console.log('🛑 Stopping detection...');
+            
             fetch(`${API_URL}/stop`, {
                 method: 'POST',
                 headers: {
@@ -647,6 +657,7 @@
             })
             .then(response => response.json())
             .then(data => {
+                console.log('✅ Detection stopped:', data);
                 document.getElementById('videoFeed').style.display = 'none';
                 document.getElementById('videoFeed').src = '';
                 document.getElementById('placeholder').style.display = 'flex';
@@ -658,6 +669,9 @@
                 
                 clearInterval(statsInterval);
                 stopAlarm();
+            })
+            .catch(error => {
+                console.error('❌ Stop error:', error);
             });
         }
 
@@ -674,6 +688,9 @@
                 } else if (!data.alarm_triggered && isAlarmPlaying) {
                     stopAlarm();
                 }
+            })
+            .catch(error => {
+                console.error('Stats update error:', error);
             });
         }
 
@@ -683,6 +700,7 @@
                 alarmAudio.play()
                     .then(() => {
                         isAlarmPlaying = true;
+                        console.log('🔊 Alarm playing');
                     })
                     .catch(e => {
                         console.error('Alarm error:', e);
@@ -695,6 +713,7 @@
                 alarmAudio.pause();
                 alarmAudio.currentTime = 0;
                 isAlarmPlaying = false;
+                console.log('🔇 Alarm stopped');
             }
         }
 
