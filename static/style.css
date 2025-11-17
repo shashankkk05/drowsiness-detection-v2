@@ -1,0 +1,170 @@
+/* Import a clean, modern font */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+
+:root {
+    --bg-color: #1a1a1a;
+    --card-color: #2a2a2a;
+    --border-color: #404040;
+    --text-primary: #f0f0f0;
+    --text-secondary: #aaaaaa;
+    --color-safe: #2ecc71;
+    --color-warn: #e67e22;
+    --color-danger: #e74c3c;
+    --color-accent: #3498db;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    margin: 0;
+    padding: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    box-sizing: border-box;
+}
+
+.container {
+    width: 100%;
+    max-width: 900px;
+    text-align: center;
+}
+
+header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 1.5rem;
+}
+
+.logo {
+    width: 40px;
+    height: 40px;
+    color: var(--color-accent);
+}
+
+h1 {
+    font-weight: 700;
+    font-size: 2.25rem;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.video-container {
+    background-color: #000;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+    margin-bottom: 2rem;
+    line-height: 0;
+    border: 3px solid var(--border-color);
+    transition: border-color 0.3s ease;
+}
+
+#video-feed {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.dashboard {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+}
+
+.card {
+    background-color: var(--card-color);
+    border-radius: 12px;
+    padding: 1.5rem 2rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    border: 1px solid var(--border-color);
+    text-align: left;
+}
+
+.card h2 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--text-secondary);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.card p {
+    margin: 0;
+    font-weight: 700;
+    font-size: 3rem;
+}
+
+/* Status colors */
+#status.status-loading {
+    color: var(--color-warn);
+}
+#status.status-open {
+    color: var(--color-safe);
+}
+#status.status-closed {
+    color: var(--color-danger);
+}
+
+#score {
+    color: var(--color-accent);
+}
+
+/* --- Alarm Overlay --- */
+#alarm-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 100;
+    pointer-events: none; /* Allows clicking through it */
+}
+
+#alarm-overlay.alarm-off {
+    display: none;
+}
+
+#alarm-overlay.alarm-on {
+    display: block;
+    background-color: rgba(255, 0, 0, 0.1);
+    /* This animation creates the "pulse" effect */
+    animation: pulse 0.8s infinite;
+}
+
+/* Add a red border to the video when alarm is on */
+#alarm-overlay.alarm-on + .container .video-container {
+    border-color: var(--color-danger);
+}
+
+
+@keyframes pulse {
+    0% { background-color: rgba(255, 0, 0, 0.1); }
+    50% { background-color: rgba(255, 0, 0, 0.3); }
+    100% { background-color: rgba(255, 0, 0, 0.1); }
+}
+
+/* Responsive for smaller screens */
+@media (max-width: 600px) {
+    body {
+        padding: 1rem;
+    }
+    h1 {
+        font-size: 1.75rem;
+    }
+    .dashboard {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    .card p {
+        font-size: 2.5rem;
+    }
+}
