@@ -1,8 +1,11 @@
+import os
+os.environ["TF_ENABLE_ONEDNN_OPTS"] = "0"
 import streamlit as st
 from streamlit_webrtc import webrtc_streamer, VideoTransformerBase
 import cv2
 import numpy as np
-from tensorflow.keras.models import load_model
+import tensorflow as tf
+from keras.models import load_model
 import av
 
 # 1. LOAD YOUR MODEL (Cached so it runs fast)
@@ -11,7 +14,8 @@ def load_drowsiness_model():
     # Make sure 'drowiness_new7.h5' is in the same folder
     return load_model('drowiness_new7.h5')
 
-model = tf.keras.models.load_model("drowiness_new7.h5", compile=False)
+model = load_model("drowiness_new7.h5", compile=False)
+
 
 
 # Load Face/Eye cascades (ensure these xml files are in your folder!)
